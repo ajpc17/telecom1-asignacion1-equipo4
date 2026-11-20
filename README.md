@@ -3,7 +3,7 @@
 **Cloud Networking y Arquitectura Segura en Azure**
 Telecomunicaciones I · Prof. Ing. Oscar Cedeño · UNEG · Ciudad Guayana
 
-**Entrega:** viernes 20/11/2026, 12:00 PM, únicamente por el Aula Virtual UNEG, como `Telecom1_Asignacion1_Equipo4.zip` (informe técnico en PDF + script `despliegue_red_azure.sh`).
+**Entrega:** viernes 20/11/2026, 12:00 PM, únicamente por Washap UNEG, como `Telecom1_Asignacion1_Equipo4.zip` (informe técnico en PDF + script `despliegue_red_azure.sh`).
 
 ---
 
