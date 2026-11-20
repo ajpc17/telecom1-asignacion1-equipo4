@@ -3,7 +3,7 @@
 **Cloud Networking y Arquitectura Segura en Azure**
 Telecomunicaciones I · Prof. Ing. Oscar Cedeño · UNEG · Ciudad Guayana
 
-**Entrega:** viernes 20/11/2026, 12:00 PM, únicamente por WhatsApp UNEG, como `Telecom1_Asignacion1_Equipo4.zip` (informe técnico en PDF + script `despliegue_red_azure.sh`).
+**Entrega:** viernes 20/11/2026, 12:00 PM, como `Telecom1_Asignacion1_Equipo4.zip` (informe técnico en PDF + script `despliegue_red_azure.sh`).
 
 ---
 
@@ -28,29 +28,15 @@ Reglas de seguridad:
 
 ---
 
-## Qué hay en este repositorio
-
-```
-Parte_Integrante1_Arnaldo/
-├── Integrante1_Arquitecto_Cloud_Equipo4.pdf    Informe del Integrante 1 (PDF)
-├── Integrante1_Arquitecto_Cloud_Equipo4.docx   Informe del Integrante 1 (Word)
-├── despliegue_red_azure.sh                     Script de despliegue y pruebas
-├── diagrama_topologia.png                      Diagrama de la topología
-└── Manual_Proximos_Pasos_Equipo4.pdf           Manual con los pasos que faltan
-```
-
----
-
 ## Equipo y roles
 
 | N° | Rol | Responsabilidad | Integrante |
 |---|---|---|---|
 | 1 | Arquitecto Cloud Lead | Direccionamiento CIDR, subredes, diagrama y pregunta 2.1 | Arnaldo Perdomo |
-| 2 | Especialista en Redes | Subred pública/privada y enrutamiento (pregunta 2.2) | _por completar_ |
-| 3 | Ingeniero de Seguridad Cloud | Reglas de los NSG (pregunta 2.4) | _por completar_ |
-| 4 | DevOps y Automatización | Script de despliegue y pruebas | _por completar_ |
-| 5 | Auditor de Calidad e IA | Auditoría de la IA, validación e informe | _por completar_ |
-
+| 2 | Especialista en Redes | Subred pública/privada y enrutamiento (pregunta 2.2) | Anthony Medina |
+| 3 | Ingeniero de Seguridad Cloud | Reglas de los NSG (pregunta 2.4) | Shirley Cedeño |
+| 4 | DevOps y Automatización | Script de despliegue y pruebas | Angel Rodriguez |
+| 5 | Auditor de Calidad e IA | Auditoría de la IA, validación e informe | Sebastián Ortiz 
 ---
 
 ## Cómo ejecutar el script
@@ -84,14 +70,3 @@ az group delete --name rg-telecom1-equipo4 --yes --no-wait
 ```
 
 ---
-
-## Estado
-
-- [x] Diseño CIDR, diagrama y pregunta 2.1 (Integrante 1)
-- [x] Script escrito y revisado
-- [ ] Script ejecutado en Azure real
-- [ ] 9 capturas de ejecución
-- [ ] Nombres de todos los integrantes
-- [ ] Informe final y ZIP de entrega
-
-Los pasos detallados están en `Manual_Proximos_Pasos_Equipo4.pdf`.
