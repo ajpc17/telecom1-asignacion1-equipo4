@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Topología de red segura en Azure · Equipo 4 (animada)</title>
+<style>
+  :root{
+    --navy:#0b3d6e; --blue:#0f6cbd; --green:#1a7f37; --red:#cf222e; --purple:#7c3aed; --amber:#9a6700;
+    --ink:#1f2328; --muted:#57606a; --line:#d0d7de;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:#f6f8fa;color:var(--ink)}
+  header{background:var(--navy);color:#fff;padding:18px 28px;border-bottom:4px solid var(--blue)}
+  header small{display:block;color:#bfd9f2;font-size:12px;letter-spacing:.04em;margin-bottom:4px}
+  header h1{margin:0;font-size:24px}
+  header p{margin:4px 0 0;color:#dbe9f7;font-size:14px}
+  main{max-width:1240px;margin:0 auto;padding:18px 16px 40px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px}
+  svg{width:100%;height:auto;display:block}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+  button,select{font:inherit;font-size:14px;padding:8px 14px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+  button.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+  button:hover{filter:brightness(.96)}
+  .caption{display:flex;gap:14px;align-items:flex-start;background:#e8f1fb;border-left:5px solid var(--blue);border-radius:10px;padding:12px 16px;min-height:84px}
+  .caption .n{flex:none;width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;display:grid;place-items:center;font-size:18px}
+  .caption h2{margin:0 0 4px;font-size:17px}
+  .caption p{margin:0;font-size:14.5px;line-height:1.45}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .chip{font-size:12.5px;padding:5px 11px;border-radius:99px;background:#fff;border:1px solid var(--line);color:var(--muted)}
+  .chip.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+  .chip.bad.on{background:var(--red);border-color:var(--red)}
+  .chip.adm.on{background:var(--purple);border-color:var(--purple)}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{display:inline-block;width:26px;height:0;border-top:3px solid}
+  text{font-family:inherit}
+  .rule rect{fill:#fff;stroke:var(--line);transition:fill .25s,stroke .25s}
+  .rule.ok rect{fill:#d1f0da;stroke:var(--green)}
+  .rule.no rect{fill:#fbd5d8;stroke:var(--red)}
+  .glow{transition:filter .25s}
+  .box{transition:stroke-width .25s}
+  .pulse{animation:pulse .9s ease-in-out 2}
+  @keyframes pulse{50%{transform:scale(1.04)}}
+  .vm{transform-box:fill-box;transform-origin:center}
+  @media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+</style>
+</head>
+<body>
+<header>
+  <small>TELECOMUNICACIONES I · PROF. ING. OSCAR CEDEÑO · UNEG</small>
+  <h1>Topología de red segura en Microsoft Azure · Equipo 4</h1>
+  <p>VNet 10.0.0.0/16 segmentada en subred pública (Frontend) y privada (Backend), protegidas con Network Security Groups.</p>
+</header>
+
+<main>
+  <div class="card">
+    <svg viewBox="0 0 1200 560" role="img" aria-label="Diagrama animado de la topología de red en Azure">
+      <defs>
+        <filter id="sh" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity=".12"/></filter>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1a7f37"/></marker>
+      </defs>
+
+      <!-- Región Azure -->
+      <rect x="190" y="50" width="995" height="470" rx="22" fill="#f6f8fa" stroke="#b6bec8" stroke-width="2" stroke-dasharray="9 7"/>
+      <text x="1165" y="78" text-anchor="end" font-size="13" fill="#57606a">Azure · Región eastus · rg-telecom1-equipo4</text>
+      <!-- VNet -->
+      <rect x="205" y="85" width="965" height="420" rx="16" fill="#fff" stroke="#0f6cbd" stroke-width="2.5"/>
+      <rect x="880" y="96" width="278" height="26" rx="13" fill="#0f6cbd"/>
+      <text x="1019" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">VNet vnet-telecom1 · 10.0.0.0/16</text>
+
+      <!-- Subred pública -->
+      <rect x="225" y="130" width="480" height="350" rx="14" fill="#ecf8f0" stroke="#7cc592" stroke-width="2"/>
+      <text x="245" y="452" font-size="19" font-weight="700" fill="#1a7f37">Subred pública · Frontend</text>
+      <text x="245" y="472" font-size="13" fill="#1a7f37">10.0.1.0/24 · 251 IP utilizables</text>
+      <!-- Subred privada -->
+      <rect x="725" y="130" width="425" height="350" rx="14" fill="#fdeeee" stroke="#f0a3a8" stroke-width="2"/>
+      <text x="1130" y="452" text-anchor="end" font-size="19" font-weight="700" fill="#cf222e">Subred privada · Backend</text>
+      <text x="1130" y="472" text-anchor="end" font-size="13" fill="#cf222e">10.0.2.0/24 · 251 IP utilizables</text>
+
+      <!-- Líneas de flujo -->
+      <path id="main" d="M150 245 H970" fill="none" stroke="#1a7f37" stroke-width="4" opacity=".28"/>
+      <path id="block" d="M85 290 V535 H845 V360" fill="none" stroke="#cf222e" stroke-width="3.5" stroke-dasharray="3 9" stroke-linecap="round" opacity=".55"/>
+      <path id="adm" d="M350 46 V190" fill="none" stroke="#7c3aed" stroke-width="3.5" stroke-dasharray="9 7" opacity=".55"/>
+      <rect x="505" y="505" width="272" height="28" rx="14" fill="#fff" stroke="#cf222e" opacity=".95"/>
+      <text x="641" y="524" text-anchor="middle" font-size="13" font-weight="700" fill="#cf222e">✕ Internet → Base de datos: BLOQUEADO</text>
+      <rect x="348" y="105" width="142" height="24" rx="12" fill="#fff" stroke="#7c3aed"/>
+      <text x="419" y="122" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7c3aed">SSH 22 · solo admin</text>
+
+      <!-- Internet -->
+      <g filter="url(#sh)">
+        <rect x="20" y="200" width="130" height="90" rx="14" fill="#e8f1fb" stroke="#0f6cbd" stroke-width="2.5"/>
+        <circle cx="85" cy="232" r="14" fill="none" stroke="#0f6cbd" stroke-width="2.2"/>
+        <ellipse cx="85" cy="232" rx="6" ry="14" fill="none" stroke="#0f6cbd" stroke-width="2"/>
+        <path d="M71 232H99" stroke="#0f6cbd" stroke-width="2"/>
+        <text x="85" y="268" text-anchor="middle" font-size="17" font-weight="700" fill="#0f6cbd">Internet</text>
+        <text x="85" y="283" text-anchor="middle" font-size="12" fill="#0f6cbd">Usuarios</text>
+      </g>
+      <!-- Admin -->
+      <g filter="url(#sh)">
+        <rect x="245" y="2" width="210" height="44" rx="22" fill="#f1eafe" stroke="#7c3aed" stroke-width="2.2"/>
+        <circle cx="275" cy="19" r="6" fill="none" stroke="#7c3aed" stroke-width="2"/>
+        <path d="M264 36c2-8 20-8 22 0" fill="none" stroke="#7c3aed" stroke-width="2"/>
+        <text x="298" y="22" font-size="15" font-weight="700" fill="#7c3aed">Administrador</text>
+        <text x="298" y="37" font-size="11" fill="#7c3aed">IP pública del admin</text>
+      </g>
+
+      <!-- nsg-web -->
+      <g id="nsgweb" class="glow" filter="url(#sh)">
+        <rect class="box" x="245" y="190" width="210" height="170" rx="12" fill="#fff8e6" stroke="#e3b341" stroke-width="2"/>
+        <text x="262" y="212" font-size="16" font-weight="700" fill="#7a4b00">🛡 nsg-web</text>
+        <text x="262" y="228" font-size="11.5" fill="#9a6700">Firewall de snet-publica</text>
+        <g class="rule" id="w100"><rect x="255" y="262" width="190" height="28" rx="7"/><text x="264" y="281" font-size="11.5"><tspan font-weight="700">P100</tspan> <tspan fill="#1a7f37" font-weight="700">Allow</tspan> 80, 443 · Internet</text></g>
+        <g class="rule" id="w110"><rect x="255" y="294" width="190" height="28" rx="7"/><text x="264" y="313" font-size="11.5"><tspan font-weight="700">P110</tspan> <tspan fill="#1a7f37" font-weight="700">Allow</tspan> 22 · solo IP del admin</text></g>
+        <g class="rule" id="w65500"><rect x="255" y="326" width="190" height="28" rx="7"/><text x="264" y="345" font-size="11.5"><tspan font-weight="700">P65500</tspan> <tspan fill="#57606a" font-weight="700">Deny</tspan> resto · por defecto</text></g>
+      </g>
+      <!-- vm-web -->
+      <g id="vmweb" class="vm" filter="url(#sh)">
+        <rect x="500" y="195" width="180" height="100" rx="12" fill="#fff" stroke="#1a7f37" stroke-width="2.5"/>
+        <rect x="514" y="209" width="26" height="22" rx="4" fill="none" stroke="#1a7f37" stroke-width="2"/>
+        <text x="550" y="222" font-size="17" font-weight="700">vm-web</text>
+        <text x="550" y="238" font-size="11.5" fill="#57606a">Servidor web (Nginx)</text>
+        <text x="514" y="262" font-size="12.5">IP privada · <tspan font-weight="700">10.0.1.4</tspan></text>
+        <rect x="514" y="268" width="104" height="20" rx="10" fill="#e6f4ea" stroke="#7cc592"/>
+        <text x="566" y="282" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1a7f37">IP pública ✓</text>
+      </g>
+      <!-- nsg-db -->
+      <g id="nsgdb" class="glow" filter="url(#sh)">
+        <rect class="box" x="745" y="190" width="200" height="170" rx="12" fill="#fff8e6" stroke="#e3b341" stroke-width="2"/>
+        <text x="762" y="212" font-size="16" font-weight="700" fill="#7a4b00">🛡 nsg-db</text>
+        <text x="762" y="228" font-size="11.5" fill="#9a6700">Firewall de snet-privada</text>
+        <g class="rule" id="d100"><rect x="755" y="262" width="180" height="28" rx="7"/><text x="763" y="281" font-size="11"><tspan font-weight="700">P100</tspan> <tspan fill="#1a7f37" font-weight="700">Allow</tspan> 5432 · desde 10.0.1.0/24</text></g>
+        <g class="rule" id="d4000"><rect x="755" y="294" width="180" height="28" rx="7"/><text x="763" y="313" font-size="11"><tspan font-weight="700">P4000</tspan> <tspan fill="#cf222e" font-weight="700">Deny</tspan> todo lo demás</text></g>
+        <g class="rule" id="d65500"><rect x="755" y="326" width="180" height="28" rx="7"/><text x="763" y="345" font-size="11"><tspan font-weight="700">P65500</tspan> <tspan fill="#57606a" font-weight="700">Deny</tspan> resto · por defecto</text></g>
+      </g>
+      <!-- vm-db -->
+      <g id="vmdb" class="vm" filter="url(#sh)">
+        <rect x="970" y="195" width="165" height="100" rx="12" fill="#fff" stroke="#cf222e" stroke-width="2.5"/>
+        <ellipse cx="992" cy="219" rx="11" ry="5" fill="none" stroke="#cf222e" stroke-width="2"/>
+        <path d="M981 219v14c0 3 5 5 11 5s11-2 11-5v-14" fill="none" stroke="#cf222e" stroke-width="2"/>
+        <text x="1012" y="222" font-size="17" font-weight="700">vm-db</text>
+        <text x="1012" y="238" font-size="11.5" fill="#57606a">Base de datos</text>
+        <text x="984" y="262" font-size="12.5">IP privada · <tspan font-weight="700">10.0.2.4</tspan></text>
+        <rect x="984" y="268" width="106" height="20" rx="10" fill="#fdeeee" stroke="#f0a3a8"/>
+        <text x="1037" y="282" text-anchor="middle" font-size="11.5" font-weight="700" fill="#cf222e">Sin IP pública ✕</text>
+      </g>
+
+      <!-- Paquetes -->
+      <g id="pkt" opacity="0"><circle r="11" fill="#0f6cbd" stroke="#fff" stroke-width="2.5"/><text id="pktL" y="-18" text-anchor="middle" font-size="12" font-weight="700" fill="#0f6cbd" paint-order="stroke" stroke="#fff" stroke-width="4">HTTPS</text></g>
+      <g id="atk" opacity="0"><circle r="11" fill="#cf222e" stroke="#fff" stroke-width="2.5"/><text y="-18" text-anchor="middle" font-size="12" font-weight="700" fill="#cf222e" paint-order="stroke" stroke="#fff" stroke-width="4">Ataque</text></g>
+      <g id="ssh" opacity="0"><circle r="10" fill="#7c3aed" stroke="#fff" stroke-width="2.5"/><text x="16" y="4" font-size="12" font-weight="700" fill="#7c3aed" paint-order="stroke" stroke="#fff" stroke-width="4">SSH</text></g>
+      <g id="xmark" opacity="0"><circle r="17" fill="#cf222e" stroke="#fff" stroke-width="3"/><path d="M-7 -7L7 7M7 -7L-7 7" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/></g>
+    </svg>
+  </div>
+
+  <div class="controls">
+    <button class="primary" id="bPause">⏸ Pausar</button>
+    <button id="bReset">↺ Reiniciar</button>
+    <label>Velocidad
+      <select id="sp"><option value="0.5">Lenta</option><option value="1" selected>Normal</option><option value="2">Rápida</option></select>
+    </label>
+  </div>
+
+  <div class="caption" aria-live="polite">
+    <div class="n" id="cN">1</div>
+    <div><h2 id="cT">…</h2><p id="cP"></p></div>
+  </div>
+
+  <div class="chips" id="chips">
+    <span class="chip">1 · Petición web</span>
+    <span class="chip">2 · NAT y servidor</span>
+    <span class="chip">3 · Este-Oeste</span>
+    <span class="chip">4 · Respuesta</span>
+    <span class="chip adm">5 · Admin SSH</span>
+    <span class="chip bad">6 · Ataque bloqueado</span>
+  </div>
+
+  <div class="legend">
+    <span><i style="border-color:#1a7f37"></i> Tráfico permitido</span>
+    <span><i style="border-color:#7c3aed;border-top-style:dashed"></i> Administración (SSH)</span>
+    <span><i style="border-color:#cf222e;border-top-style:dotted"></i> Tráfico bloqueado</span>
+    <span>P = prioridad: el número menor se evalúa primero</span>
+  </div>
+</main>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const main = $('main'), block = $('block'), adm = $('adm');
+  const LM = main.getTotalLength(), LB = block.getTotalLength(), LA = adm.getTotalLength();
+  // posiciones sobre el camino principal (x - 150)
+  const X = {start:0, nsgWeb:95, vmWeb:340, nsgDb:595, vmDb:820};
+  let paused = false, speed = 1, token = 0;
+
+  const tween = (tk, dur, fn) => new Promise(res => {
+    let t = 0, last = performance.now();
+    (function f(now){
+      if (tk !== token) return res();
+      const dt = now - last; last = now;
+      if (!paused) t += dt * speed;
+      fn(Math.min(t / dur, 1));
+      t >= dur ? res() : requestAnimationFrame(f);
+    })(last);
+  });
+  const wait = (tk, ms) => tween(tk, ms, () => {});
+  const ease = u => u < .5 ? 2*u*u : 1 - Math.pow(-2*u + 2, 2) / 2;
+
+  function place(g, path, len, d){ const p = path.getPointAtLength(d); g.setAttribute('transform', `translate(${p.x},${p.y})`);
+    if (g === pkt) { const dentro = (p.x > 238 && p.x < 462) || (p.x > 738 && p.x < 952); $('pktL').style.opacity = dentro ? 0 : 1; } }
+  function show(g, v){ g.setAttribute('opacity', v ? 1 : 0); }
+  async function move(tk, g, path, len, a, b, dur){
+    await tween(tk, dur, u => place(g, path, len, a + (b - a) * ease(u)));
+  }
+  function mark(id, cls){ const e = $(id); e.classList.remove('ok','no'); if (cls) e.classList.add(cls); }
+  function clearRules(){ ['w100','w110','w65500','d100','d4000','d65500'].forEach(i => mark(i)); }
+  function pulse(id){ const e = $(id); e.classList.remove('pulse'); void e.getBoundingClientRect(); e.classList.add('pulse'); }
+  function chip(i){ [...$('chips').children].forEach((c, k) => c.classList.toggle('on', k === i)); }
+  function step(i, n, title, text){ chip(i); $('cN').textContent = n; $('cT').textContent = title; $('cP').textContent = text; }
+
+  const pkt = $('pkt'), atk = $('atk'), ssh = $('ssh'), xm = $('xmark');
+
+  async function cycle(tk){
+    const ok = () => tk === token;
+    clearRules(); [pkt, atk, ssh, xm].forEach(g => show(g, 0));
+
+    // 1 Petición web
+    step(0, 1, 'Llega una petición web', 'El navegador envía HTTPS a la IP pública de vm-web (TCP 443). nsg-web revisa sus reglas de menor a mayor número: coincide la P100 y el tráfico se permite.');
+    $('pktL').textContent = 'HTTPS 443'; pkt.firstElementChild.setAttribute('fill', '#0f6cbd');
+    place(pkt, main, LM, X.start); show(pkt, 1);
+    await move(tk, pkt, main, LM, X.start, X.nsgWeb, 1500); if (!ok()) return;
+    mark('w100', 'ok'); await wait(tk, 1400); if (!ok()) return;
+
+    // 2 NAT + servidor
+    step(1, 2, 'NAT y servidor web', 'Azure traduce la IP pública a la privada 10.0.1.4 (NAT 1:1) y Nginx procesa la solicitud. Para armar la respuesta necesita datos de la base de datos.');
+    await move(tk, pkt, main, LM, X.nsgWeb, X.vmWeb, 1500); if (!ok()) return;
+    pulse('vmweb'); await wait(tk, 1500); if (!ok()) return;
+
+    // 3 Este-Oeste
+    step(2, 3, 'Tráfico Este-Oeste hacia la base de datos', 'vm-web abre una conexión nueva a 10.0.2.4:5432 por la ruta de sistema VirtualNetwork, sin salir a Internet. nsg-db la permite (P100) porque el origen está en 10.0.1.0/24.');
+    $('pktL').textContent = 'TCP 5432'; pkt.firstElementChild.setAttribute('fill', '#9a6700'); $('pktL').setAttribute('fill', '#9a6700');
+    await move(tk, pkt, main, LM, X.vmWeb, X.nsgDb, 1500); if (!ok()) return;
+    mark('d100', 'ok'); await wait(tk, 1300); if (!ok()) return;
+    await move(tk, pkt, main, LM, X.nsgDb, X.vmDb, 1300); if (!ok()) return;
+    pulse('vmdb'); await wait(tk, 1000); if (!ok()) return;
+
+    // 4 Respuesta
+    step(3, 4, 'La respuesta regresa (NSG con estado)', 'Los NSG son stateful: si la entrada se permitió, el tráfico de retorno pasa solo, sin necesitar una regla de salida. Los datos vuelven a vm-web y de ahí al usuario.');
+    $('pktL').textContent = 'Respuesta'; pkt.firstElementChild.setAttribute('fill', '#1a7f37'); $('pktL').setAttribute('fill', '#1a7f37');
+    await move(tk, pkt, main, LM, X.vmDb, X.start, 3200); if (!ok()) return;
+    show(pkt, 0); $('pktL').setAttribute('fill', '#0f6cbd'); clearRules(); await wait(tk, 700); if (!ok()) return;
+
+    // 5 Admin SSH
+    step(4, 5, 'Administración por SSH', 'El administrador entra por el puerto 22. La regla P110 solo acepta la IP del administrador (/32), nunca 0.0.0.0/0, así que nadie más puede usar SSH.');
+    place(ssh, adm, LA, 0); show(ssh, 1);
+    await move(tk, ssh, adm, LA, 0, LA, 1700); if (!ok()) return;
+    mark('w110', 'ok'); await wait(tk, 1600); if (!ok()) return;
+    show(ssh, 0); clearRules();
+
+    // 6 Ataque bloqueado
+    step(5, 6, 'Intento de acceso directo a la base de datos', 'Un atacante en Internet intenta llegar a vm-db. No tiene IP pública, así que no existe un camino hasta ella, y aunque llegara a la subred, la regla Deny de P4000 de nsg-db cierra el paso (incluso al tráfico interno que AllowVnetInBound dejaría pasar).');
+    place(atk, block, LB, 0); show(atk, 1);
+    await move(tk, atk, block, LB, 0, LB, 3000); if (!ok()) return;
+    const end = block.getPointAtLength(LB); xm.setAttribute('transform', `translate(${end.x},${end.y + 4})`); show(xm, 1);
+    mark('d4000', 'no'); show(atk, 0);
+    await wait(tk, 2600); if (!ok()) return;
+    show(xm, 0); clearRules();
+    await wait(tk, 500); if (!ok()) return;
+  }
+
+  async function loop(){
+    const tk = ++token;
+    while (tk === token){ await cycle(tk); }
+  }
+
+  $('bPause').addEventListener('click', e => {
+    paused = !paused;
+    e.target.textContent = paused ? '▶ Reanudar' : '⏸ Pausar';
+  });
+  $('bReset').addEventListener('click', () => { paused = false; $('bPause').textContent = '⏸ Pausar'; loop(); });
+  $('sp').addEventListener('change', e => speed = parseFloat(e.target.value));
+  loop();
+})();
+</script>
+</body>
+</html>
